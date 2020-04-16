@@ -1,0 +1,10 @@
+node_modules/
+.serverless
+.webpack
+.next
+.logs
+coverage/
+
+
+yarn-error.log
+npm-*.log
