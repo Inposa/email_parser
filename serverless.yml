@@ -1,6 +1,9 @@
 service:
   name: email-parser
 
+package:
+  individually: true
+
 custom:
   webpack:
     webpackConfig: ./webpack.config.js
@@ -13,14 +16,13 @@ plugins:
 provider:
   name: aws
   runtime: nodejs12.x
+  stage: prod
   region: eu-west-2
 
 functions:
-  parse:
-    handler: handler.parse
+  app:
+    handler: handler.handler
     events:
-      - http:
-          path: parse
-          method: post
-          cors: true
+      - http: ANY /
+      - http: "ANY {proxy+}"
     timeout: 900
