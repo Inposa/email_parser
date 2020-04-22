@@ -1,3 +1,11 @@
 {
+<<<<<<< HEAD
     "anabaToken":
+=======
+    "anabaToken": [
+        "Token-here",
+        "Token-here"
+      ]
+
+>>>>>>> Tests with jest
 }
