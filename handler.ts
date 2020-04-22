@@ -15,6 +15,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
  * }
  */
 app.post("/parse", function (req, res) {
+  const anabaToken = req.body.token;
+  
+
   // Get params
   const queryMessage = req.body.emailBody;
   const bodyString = JSON.stringify(queryMessage);
