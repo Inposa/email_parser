@@ -5,7 +5,7 @@
   "main": "handler.js",
   "scripts": {
     "test": "echo test",
-    "build": "serverless package",
+    "package": "serverless package",
     "deploy": "serverless deploy -v"
   },
   "author": "anaba",
