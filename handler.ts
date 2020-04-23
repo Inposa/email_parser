@@ -2,6 +2,8 @@ const serverless = require("serverless-http");
 const express = require("express");
 const app = express();
 
+const {anabaToken} = require("./config.json")
+
 const bodyParser = require("body-parser");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -15,8 +17,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
  * }
  */
 app.post("/parse", function (req, res) {
-  const anabaToken = req.body.token;
-  
+  const token = req.body.token;
+  if (!anabaToken.find(token)){
+    return;
+  }
+
 
   // Get params
   const queryMessage = req.body.emailBody;
@@ -31,9 +36,6 @@ app.post("/parse", function (req, res) {
   );
 
   // Return result
-  res.send({
-    phones: phoneNumbers,
-    websites: websites,
-  });
+  res.send();
 });
-module.exports.handler = serverless(app);
+module.exports.handler = app, serverless(app);
