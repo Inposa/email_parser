@@ -4,7 +4,9 @@
   "description": "",
   "main": "handler.js",
   "scripts": {
-    "test": "serverless-bundle test"
+    "test": "echo test",
+    "build": "serverless package",
+    "deploy": "serverless deploy -v"
   },
   "author": "anaba",
   "devDependencies": {
