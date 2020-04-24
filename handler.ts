@@ -2,11 +2,12 @@ const serverless = require("serverless-http");
 const express = require("express");
 const app = express();
 
-const {anabaToken} = require("./config.json")
-
 const bodyParser = require("body-parser");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+const utils = require("./utils")
+const { tokens } = require("./config.json");
 
 /**
  * This function get an email body in params, and return a json object like this :
@@ -17,25 +18,23 @@ app.use(bodyParser.urlencoded({ extended: true }));
  * }
  */
 app.post("/parse", function (req, res) {
-  const token = req.body.token;
-  if (!anabaToken.find(token)){
-    return;
-  }
-
-
   // Get params
   const queryMessage = req.body.emailBody;
   const bodyString = JSON.stringify(queryMessage);
+  
+  const token = req.body.token;
+  const tokenString = JSON.stringify(token)
 
+  // Stop request if invalid token is provided
+  if(!utils.verifToken(tokenString, tokens)){
+    res.status(403).send("Accès refusé.")
+  }
+  
   // Use regex to find what we want
-  const phoneNumbers = bodyString.match(
-    /((0|\+?([1-9]|[0-9][0-9]|[0-9][0-9][0-9]))[1-9]([- .]?[0-9]{2}){4})/g
-  );
-  const websites = bodyString.match(
-    /\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))/g
-  );
+  const response = utils.emailStringParser(bodyString);
 
   // Return result
-  res.send();
+  res.send(response);
 });
-module.exports.handler = app, serverless(app);
+
+module.exports.handler = serverless(app);
