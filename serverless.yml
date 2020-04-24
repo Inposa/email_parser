@@ -4,14 +4,15 @@ service:
 package:
   individually: true
 
-#custom:
-#  webpack:
-#    webpackConfig: ./webpack.config.js
-#    includeModules: true
-
 plugins:
   - serverless-offline
   - serverless-webpack
+
+custom:
+  webpack:
+    webpackConfig: ./webpack.config.js
+    includeModules: true
+    packager: yarn
 
 provider:
   name: aws
