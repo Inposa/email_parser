@@ -23,15 +23,10 @@ test:
   script:
     - yarn test
 
-package:dev:
+package:
   stage: package
   script:
-    - yarn package:dev
-    
-package:prod:
-  stage: package
-  script:
-    - yarn package:prod
+    - yarn package
 
 deploy:dev:
   stage: deploy

@@ -6,8 +6,7 @@
   "scripts": {
     "start": "serverless offline --httpPort=3005 --env=local --stage=local --noPrependStageInUrl --noTimeout",
     "test": "jest",
-    "package:dev": "serverless package --stage dev --env dev",
-    "package:prod": "serverless package --stage prod --env prod",
+    "package": "serverless package",
     "deploy:dev": "serverless deploy -v --stage dev --env dev",
     "deploy:prod": "serverless deploy -v --stage prod --env prod"
   },
