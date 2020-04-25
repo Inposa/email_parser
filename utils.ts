@@ -1,7 +1,7 @@
 /**
  * Test if a provided phone number is a mobile phone number
  * @param phoneNumber phone numer to test
- * @returns return true if the provided phone number begins with mobile prefix 
+ * @returns return true if the provided phone number begins with mobile prefix
  */
 export const isMobilePhone = (phoneNumber = "") => {
   const phone = phoneNumber.replace(" ", "");
@@ -32,7 +32,7 @@ export const emailStringParser = (testString = "") => {
 
   const mobilePhone = phoneNumbers.filter((element) => isMobilePhone(element));
   const HomePhone = phoneNumbers.filter((element) => !isMobilePhone(element));
-  
+
   const websites = testString.match(
     /\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))/g
   );
@@ -50,9 +50,14 @@ export const emailStringParser = (testString = "") => {
  * @param tokenArray array of all valid token
  * @returns return true if stringToken is present in tokenArray
  */
-export const verifToken = (stringToken: string = "", tokenArray: Array<string> = []) => {
-  if(stringToken == ""){
+export const verifToken = (
+  stringToken: string = "",
+  tokenArray: Array<string> = []
+) => {
+  if (stringToken == "") {
     return false;
   }
-  return tokenArray.includes(stringToken);
+  return (
+    stringToken === process.env.ANABATOKEN || tokenArray.includes(stringToken)
+  );
 };

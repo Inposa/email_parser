@@ -4,9 +4,12 @@
   "description": "",
   "main": "handler.ts",
   "scripts": {
+    "start": "serverless offline --httpPort=3005 --env=local --stage=local --noPrependStageInUrl --noTimeout",
     "test": "jest",
-    "package": "serverless package",
-    "deploy": "serverless deploy -v"
+    "package:dev": "serverless package --stage dev --env dev",
+    "package:prod": "serverless package --stage prod --env prod",
+    "deploy:dev": "serverless deploy -v --stage dev --env dev",
+    "deploy:prod": "serverless deploy -v --stage prod --env prod"
   },
   "author": "anaba",
   "jest": {
@@ -16,9 +19,9 @@
     ]
   },
   "dependencies": {
+    "body-parser": "^1.19.0",
     "express": "^4.17.1",
-    "serverless-http": "^2.3.2",
-    "body-parser": "^1.19.0"
+    "serverless-http": "^2.3.2"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
@@ -34,6 +37,7 @@
     "prettier": "^2.0.5",
     "serverless": "^1.68.0",
     "serverless-bundle": "^1.2.5",
+    "serverless-domain-manager": "^3.3.2",
     "serverless-dotenv-plugin": "^2.1.1",
     "serverless-http": "^2.3.2",
     "serverless-offline": "^6.1.4",

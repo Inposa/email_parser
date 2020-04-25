@@ -12,22 +12,41 @@ stages:
 cache:
   paths:
     - node_modules/
+
 install:
   stage: install
   script:
     - yarn install
+
 test:
   stage: test
   script:
     - yarn test
-package:
+
+package:dev:
   stage: package
   script:
-    - yarn package
-deploy:
+    - yarn package:dev
+    
+package:prod:
+  stage: package
+  script:
+    - yarn package:prod
+
+deploy:dev:
   stage: deploy
   script:
-    - yarn deploy
+    - yarn deploy:dev
   dependencies:
     - install
   when: manual
+
+deploy:prod:
+  stage: deploy
+  script:
+    - yarn deploy:dev
+  dependencies:
+    - install
+  only:
+    refs:
+      - master

@@ -1,9 +1,3 @@
 {
-    "anabaToken": [
-        "put",
-        "tokens",
-        "here",
-        "token-test"
-      ]
-
+  "anabaToken": ["put", "tokens", "here", "token-test"]
 }

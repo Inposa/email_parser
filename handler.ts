@@ -7,7 +7,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const utils = require("./utils");
-const {anabaToken} = require("./config.json");
+const { anabaToken } = require("./config.json");
 
 /**
  * This function get an email body in params, and return a json object like this :
@@ -23,10 +23,12 @@ app.post("/parse", function (req, res) {
   const bodyString = JSON.stringify(queryMessage);
 
   const token = req.body.token;
-  const tokenString = JSON.stringify(token);
 
   // Stop request if invalid token is provided
-  if (!utils.verifToken(tokenString, JSON.stringify(anabaToken))) {
+  if (
+    process.env.ENV !== "local" &&
+    !utils.verifToken(token, JSON.stringify(anabaToken))
+  ) {
     res.status(403).send("Forbidden: invalid token");
   }
 
@@ -35,7 +37,7 @@ app.post("/parse", function (req, res) {
 
   // Return result
   //res.send(response);
-  res.send(response)
+  res.send(response);
 });
 
 module.exports.handler = serverless(app);
