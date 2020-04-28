@@ -61,3 +61,17 @@ export const verifToken = (
     stringToken === process.env.ANABATOKEN || tokenArray.includes(stringToken)
   );
 };
+
+export const parseNames = (fullName: string = "") => {
+  console.log("fullname", fullName);
+  const splittedName = fullName ? fullName.split(" ") : null;
+  const finalParsedContact = {
+    firstname: splittedName ? splittedName[0] : "",
+    lastname:
+      splittedName && splittedName.length > 1
+        ? splittedName.slice(1).join(" ")
+        : "",
+  };
+  console.log("finalParsedContact", finalParsedContact);
+  return finalParsedContact;
+};

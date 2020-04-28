@@ -19,8 +19,6 @@ const { anabaToken } = require("./config.json");
  */
 app.post("/parse", function (req, res) {
   // Get params
-  const queryMessage = req.body.emailBody;
-  const bodyString = JSON.stringify(queryMessage);
 
   const token = req.body.token;
 
@@ -32,8 +30,14 @@ app.post("/parse", function (req, res) {
     res.status(403).send("Forbidden: invalid token");
   }
 
+  const fullname = req.body.name;
+  const names = utils.parseNames(fullname);
+  
+  const bodyString = req.body.emailBody;
   // Use regex to find what we want
-  const response = utils.emailStringParser(bodyString);
+  const info = utils.emailStringParser(bodyString);
+  console.log(names);
+  const response = { ...info, ...names };
 
   // Return result
   //res.send(response);
