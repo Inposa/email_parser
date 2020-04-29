@@ -26,9 +26,14 @@ export const isMobilePhone = (phoneNumber = "") => {
  */
 export const emailStringParser = (testString = "") => {
   // Use regex to find what we want
-  const phoneNumbers = testString.match(
+  /*let phoneNumbers = testString.match(
     /((0|\+?([1-9]|[0-9][0-9]|[0-9][0-9][0-9]))[1-9]([- .]?[0-9]{2}){4})/g
+  );*/
+
+  let phoneNumbers = testString.match(
+    /((0|\+?([1-9]|[0-9][0-9]|[0-9][0-9][0-9]))( |)(\(0\)|)[1-9]([- .]?[0-9]{2}){4})/g
   );
+
   let mobilePhone = [];
   let HomePhone = [];
 
