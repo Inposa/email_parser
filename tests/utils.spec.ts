@@ -38,6 +38,9 @@ describe("utils", () => {
       ${"téléphone mobile seul 0668432753"}                        | ${{ phones: [], mobiles: ["0668432753"], websites: [] }}
       ${"téléphone fixe seul 0467605412"}                          | ${{ phones: ["0467605412"], mobiles: [], websites: [] }}
       ${"Site web seul : www.monsite.fr"}                          | ${{ phones: [], mobiles: [], websites: ["www.monsite.fr"] }}
+      ${"+33(0)606060606"}                                         | ${{ phones: [], mobiles: ["+33(0)606060606"], websites: [] }}
+      ${"+33 (0)606060606"}                                        | ${{ phones: [], mobiles: ["+33 (0)606060606"], websites: [] }}
+      ${"+33 (0)406060606"}                                        | ${{ phones: ["+33 (0)406060606"], mobiles: [], websites: [] }}
       ${"Rien du tout !"}                                          | ${{ phones: [], mobiles: [], websites: [] }}
     `(
       "should return expected when run with $emailBody",
