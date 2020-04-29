@@ -34,7 +34,11 @@ describe("utils", () => {
   describe("emailParser", () => {
     test.each`
       emailBody                                                    | expected
-      ${"site et téléphone 0668432753 0467605412 www.example.com"} | ${{ phone: ["0467605412"], mobile: ["0668432753"], website: ["www.example.com"] }}
+      ${"site et téléphone 0668432753 0467605412 www.example.com"} | ${{ phones: ["0467605412"], mobiles: ["0668432753"], websites: ["www.example.com"] }}
+      ${"téléphone mobile seul 0668432753"}                        | ${{ phones: [], mobiles: ["0668432753"], websites: [] }}
+      ${"téléphone fixe seul 0467605412"}                          | ${{ phones: ["0467605412"], mobiles: [], websites: [] }}
+      ${"Site web seul : www.monsite.fr"}                          | ${{ phones: [], mobiles: [], websites: ["www.monsite.fr"] }}
+      ${"Rien du tout !"}                                          | ${{ phones: [], mobiles: [], websites: [] }}
     `(
       "should return expected when run with $emailBody",
       async ({ emailBody, expected }) => {
@@ -63,5 +67,20 @@ describe("utils", () => {
     `("sould return false when testing for $token", async ({ token }) => {
       expect(Utils.verifToken(token, arrayTest)).toBeFalsy();
     });
+  });
+
+  describe("Test parseNames", () => {
+    test.each`
+      namesString             | expected
+      ${"Jean Jacques"}       | ${{ firstname: "Jean", lastname: "Jacques" }}
+      ${"Pierre"}             | ${{ firstname: "Pierre", lastname: "" }}
+      ${"Jean-Michel Dupont"} | ${{ firstname: "Jean-Michel", lastname: "Dupont" }}
+      ${"Jean-Pierre"}        | ${{ firstname: "Jean-Pierre", lastname: "" }}
+    `(
+      "should return expected when run with $emailBody",
+      async ({ namesString, expected }) => {
+        expect(Utils.parseNames(namesString)).toStrictEqual(expected);
+      }
+    );
   });
 });
