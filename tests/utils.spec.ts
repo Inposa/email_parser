@@ -1,7 +1,7 @@
 const Utils = require("../utils");
 
-describe("utils", () => {
-  describe("isMobilePhone", () => {
+describe("Test suite for utils.js :", () => {
+  describe("Test isMobilePhone", () => {
     test.each`
       phone
       ${"0606060606"}
@@ -12,6 +12,9 @@ describe("utils", () => {
       ${"+33 (0)706060606"}
       ${"+33606060606"}
       ${"+33706060606"}
+      ${"+33(0)606060606"}
+      ${"+33 (0)606060606"}
+      ${"+33 (0)6 79 52 02 58"}
     `("should return true when testing for $phone", async ({ phone }) => {
       expect(Utils.isMobilePhone(phone)).toBeTruthy();
     });
@@ -26,12 +29,34 @@ describe("utils", () => {
       ${"+33 (0)106060606"}
       ${"+33406060606"}
       ${"+33106060606"}
+      ${"+33 (0)4 06 06 06 06"}
     `("should return false when testing for $phone", async ({ phone }) => {
       expect(Utils.isMobilePhone(phone)).toBeFalsy();
     });
   });
 
-  describe("emailParser", () => {
+  describe("Test is phoneNumber", () => {
+    test.each`
+      phone
+      ${"0406060606"}
+      ${"+33 (0)6 79 52 02 58"}
+      ${"+33 (0)606060606"}
+      ${"+33(0)406060606"}
+    `("should return true when testing for $phone", async ({ phone }) => {
+      expect(Utils.isPhoneNumber(phone)).toBeTruthy();
+    });
+
+    test.each`
+      phone
+      ${"2004280040001206"}
+      ${"200428004000"}
+      ${"6412547895"}
+    `("should return false when testing for $phone", async ({ phone }) => {
+      expect(Utils.isPhoneNumber(phone)).toBeFalsy();
+    });
+  });
+
+  describe("Test emailParser", () => {
     test.each`
       emailBody                                                    | expected
       ${"site et téléphone 0668432753 0467605412 www.example.com"} | ${{ phones: ["0467605412"], mobiles: ["0668432753"], websites: ["www.example.com"] }}
@@ -41,6 +66,7 @@ describe("utils", () => {
       ${"+33(0)606060606"}                                         | ${{ phones: [], mobiles: ["+33(0)606060606"], websites: [] }}
       ${"+33 (0)606060606"}                                        | ${{ phones: [], mobiles: ["+33 (0)606060606"], websites: [] }}
       ${"+33 (0)406060606"}                                        | ${{ phones: ["+33 (0)406060606"], mobiles: [], websites: [] }}
+      ${"+33 (0)6 79 52 02 58"}                                    | ${{ phones: [], mobiles: ["+33 (0)6 79 52 02 58"], websites: [] }}
       ${"Rien du tout !"}                                          | ${{ phones: [], mobiles: [], websites: [] }}
     `(
       "should return expected when run with $emailBody",

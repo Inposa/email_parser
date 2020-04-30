@@ -34,9 +34,10 @@ app.post("/parse", function (req, res) {
   const names = utils.parseNames(fullname);
   
   const bodyString = req.body.emailBody;
+  console.log("PAR ICI, IL FAUT REGARDER LAAAAAAAAAAAAAAAAAAAAAAAA\n",bodyString) //À supprimer
   // Use regex to find what we want
   const info = utils.emailStringParser(bodyString);
-  console.log(names);
+  console.log("PAR ICI, IL FAUT REGARDER LAAAAAAAAAAAAAAAAAAAAAAAA\n",info)       //À supprimer
   const response = { ...info, ...names };
 
   // Return result

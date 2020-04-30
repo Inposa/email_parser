@@ -4,14 +4,27 @@
  * @returns return true if the provided phone number begins with mobile prefix
  */
 export const isMobilePhone = (phoneNumber = "") => {
-  const phone = phoneNumber.replace(" ", "");
+  const phone = phoneNumber.replace(/\s+/g, "");
   return (
     phone.startsWith("06") ||
     phone.startsWith("07") ||
     phone.startsWith("+336") ||
     phone.startsWith("+337") ||
     phone.startsWith("+33(0)6") ||
-    phone.startsWith("+33(0)7")
+    phone.startsWith("+33(0)7") ||
+    phone.startsWith("+33 (0)6") ||
+    phone.startsWith("+33 (0)7")
+  );
+};
+
+//0668452365      --> 10
+//+33654455445    --> 12
+//+33(0)654455445 --> 15
+export const isPhoneNumber = (phoneNumber = "") => {
+  const phone = phoneNumber.replace(/\s+/g, "");
+  return (
+    (phone.length === 10 || phone.length === 12 || phone.length === 15) &&
+    (phone.startsWith("0") || phone.startsWith("+33"))
   );
 };
 
@@ -26,20 +39,21 @@ export const isMobilePhone = (phoneNumber = "") => {
  */
 export const emailStringParser = (testString = "") => {
   // Use regex to find what we want
-  /*let phoneNumbers = testString.match(
-    /((0|\+?([1-9]|[0-9][0-9]|[0-9][0-9][0-9]))[1-9]([- .]?[0-9]{2}){4})/g
-  );*/
 
   let phoneNumbers = testString.match(
     /((0|\+?([1-9]|[0-9][0-9]|[0-9][0-9][0-9]))( |)(\(0\)|)[1-9]([- .]?[0-9]{2}){4})/g
   );
 
   let mobilePhone = [];
-  let HomePhone = [];
+  let homePhone = [];
 
   if (phoneNumbers != null) {
-    mobilePhone = phoneNumbers.filter((element) => isMobilePhone(element));
-    HomePhone = phoneNumbers.filter((element) => !isMobilePhone(element));
+    mobilePhone = phoneNumbers.filter(
+      (element) => isPhoneNumber(element) && isMobilePhone(element)
+    );
+    homePhone = phoneNumbers.filter(
+      (element) => isPhoneNumber(element) && !isMobilePhone(element)
+    );
   }
 
   let websites = testString.match(
@@ -50,7 +64,7 @@ export const emailStringParser = (testString = "") => {
   }
 
   return {
-    phones: HomePhone,
+    phones: homePhone,
     mobiles: mobilePhone,
     websites: websites,
   };
