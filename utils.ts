@@ -4,16 +4,15 @@
  * @returns return true if the provided phone number begins with mobile prefix
  */
 export const isMobilePhone = (phoneNumber = "") => {
-  const phone = phoneNumber.replace(/\s+/g, "");
   return (
-    phone.startsWith("06") ||
-    phone.startsWith("07") ||
-    phone.startsWith("+336") ||
-    phone.startsWith("+337") ||
-    phone.startsWith("+33(0)6") ||
-    phone.startsWith("+33(0)7") ||
-    phone.startsWith("+33 (0)6") ||
-    phone.startsWith("+33 (0)7")
+    phoneNumber.startsWith("06") ||
+    phoneNumber.startsWith("07") ||
+    phoneNumber.startsWith("+336") ||
+    phoneNumber.startsWith("+337") ||
+    phoneNumber.startsWith("+33(0)6") ||
+    phoneNumber.startsWith("+33(0)7") ||
+    phoneNumber.startsWith("+33 (0)6") ||
+    phoneNumber.startsWith("+33 (0)7")
   );
 };
 
@@ -21,7 +20,8 @@ export const isMobilePhone = (phoneNumber = "") => {
 //+33654455445    --> 12
 //+33(0)654455445 --> 15
 export const isPhoneNumber = (phoneNumber = "") => {
-  const phone = phoneNumber.replace(/\s+/g, "");
+  const phone = phoneNumber.replace(/\s|\.|-+/g, "");
+  console.log("test:", phone);
   return (
     (phone.length === 10 || phone.length === 12 || phone.length === 15) &&
     (phone.startsWith("0") || phone.startsWith("+33"))
@@ -39,11 +39,18 @@ export const isPhoneNumber = (phoneNumber = "") => {
  */
 export const emailStringParser = (testString = "") => {
   // Use regex to find what we want
+  const str = testString.replace(/\s+/g, "");
+  console.log("Test str avec replace :\n", str);
+  /*let phoneNumbers = str.match(
+    /((0|\+?([1-9]|[0-9][0-9]|[0-9][0-9][0-9]))[- .]?(\(0\)|)[1-9]([- .]?[0-9]{2}){4})/g
+  );*/
 
-  let phoneNumbers = testString.match(
-    /((0|\+?([1-9]|[0-9][0-9]|[0-9][0-9][0-9]))( |)(\(0\)|)[1-9]([- .]?[0-9]{2}){4})/g
+  //(?![0-9]{11}) --> exclure la chaîne si elle contient plus de 10 nombres
+  let phoneNumbers = str.match(
+    /(?![0-9]{11})((\+(33))|0)(\(0\))?[1-9]([-. ]?([0-9]{2})){4}/g
   );
 
+  console.log("Extracted :\n", phoneNumbers);
   let mobilePhone = [];
   let homePhone = [];
 
@@ -56,13 +63,14 @@ export const emailStringParser = (testString = "") => {
     );
   }
 
-  let websites = testString.match(
+  const websites = [];
+  /*let websites = testString.match(
     /\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))/g
   );
   if (websites == null) {
     websites = [];
-  }
-
+  }*/
+  console.log("Resultat \n", homePhone, mobilePhone, websites);
   return {
     phones: homePhone,
     mobiles: mobilePhone,
