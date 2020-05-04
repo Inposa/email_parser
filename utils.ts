@@ -21,7 +21,7 @@ export const isMobilePhone = (phoneNumber = "") => {
 //+33(0)654455445 --> 15
 export const isPhoneNumber = (phoneNumber = "") => {
   const phone = phoneNumber.replace(/\s|\.|-+/g, "");
-  console.log("test:", phone);
+  //console.log("test:", phone);
   return (
     (phone.length === 10 || phone.length === 12 || phone.length === 15) &&
     (phone.startsWith("0") || phone.startsWith("+33"))
@@ -40,17 +40,17 @@ export const isPhoneNumber = (phoneNumber = "") => {
 export const emailStringParser = (testString = "") => {
   // Use regex to find what we want
   const str = testString.replace(/\s+/g, "");
-  console.log("Test str avec replace :\n", str);
+  //console.log("Test str avec replace :\n", str);
   /*let phoneNumbers = str.match(
     /((0|\+?([1-9]|[0-9][0-9]|[0-9][0-9][0-9]))[- .]?(\(0\)|)[1-9]([- .]?[0-9]{2}){4})/g
   );*/
 
-  //(?![0-9]{11}) --> exclure la chaîne si elle contient plus de 10 nombres
+  //(?![0-9]{11}) --> exclude string if contain more than 10 digits
   let phoneNumbers = str.match(
     /(?![0-9]{11})((\+(33))|0)(\(0\))?[1-9]([-. ]?([0-9]{2})){4}/g
   );
 
-  console.log("Extracted :\n", phoneNumbers);
+  //console.log("Extracted :\n", phoneNumbers);
   let mobilePhone = [];
   let homePhone = [];
 
@@ -70,7 +70,7 @@ export const emailStringParser = (testString = "") => {
   if (websites == null) {
     websites = [];
   }*/
-  console.log("Resultat \n", homePhone, mobilePhone, websites);
+  //console.log("Resultat \n", homePhone, mobilePhone, websites);
   return {
     phones: homePhone,
     mobiles: mobilePhone,

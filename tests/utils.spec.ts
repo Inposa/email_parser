@@ -59,15 +59,24 @@ describe("Test suite for utils.js :", () => {
   describe("Test emailParser", () => {
     test.each`
       emailBody                                                    | expected
-      ${"site et téléphone 0668432753 0467605412 www.example.com"} | ${{ phones: ["0467605412"], mobiles: ["0668432753"], websites: ["www.example.com"] }}
-      ${"téléphone mobile seul 0668432753"}                        | ${{ phones: [], mobiles: ["0668432753"], websites: [] }}
+      ${"site et téléphone 0668432753, 0467605412 www.example.com"} | ${{ phones: ["0467605412"], mobiles: ["0668432753"], websites: [] }}
+      ${"04.67.13.00.07"}                                          | ${{ phones: ["04.67.13.00.07"], mobiles: [], websites: [] }}
       ${"téléphone fixe seul 0467605412"}                          | ${{ phones: ["0467605412"], mobiles: [], websites: [] }}
-      ${"Site web seul : www.monsite.fr"}                          | ${{ phones: [], mobiles: [], websites: ["www.monsite.fr"] }}
+      ${"+33 (0)406060606"}                                        | ${{ phones: ["+33(0)406060606"], mobiles: [], websites: [] }}
+      ${"+33215644865"}                                            | ${{ phones: ["+33215644865"], mobiles: [], websites: [] }}
+      ${"+33(0)143132017"}                                         | ${{ phones: ["+33(0)143132017"], mobiles: [], websites: [] }}
+      ${"+33143381247"}                                            | ${{ phones: ["+33143381247"], mobiles: [], websites: [] }}
+      ${"téléphone mobile seul 0668432753"}                        | ${{ phones: [], mobiles: ["0668432753"], websites: [] }}
       ${"+33(0)606060606"}                                         | ${{ phones: [], mobiles: ["+33(0)606060606"], websites: [] }}
-      ${"+33 (0)606060606"}                                        | ${{ phones: [], mobiles: ["+33 (0)606060606"], websites: [] }}
-      ${"+33 (0)406060606"}                                        | ${{ phones: ["+33 (0)406060606"], mobiles: [], websites: [] }}
-      ${"+33 (0)6 79 52 02 58"}                                    | ${{ phones: [], mobiles: ["+33 (0)6 79 52 02 58"], websites: [] }}
+      ${"+33 (0)606060606"}                                        | ${{ phones: [], mobiles: ["+33(0)606060606"], websites: [] }}
+      ${"+33 (0)6 79 52 02 58"}                                    | ${{ phones: [], mobiles: ["+33(0)679520258"], websites: [] }}
+      ${"0686432753"}                                              | ${{ phones: [], mobiles: ["0686432753"], websites: [] }}
+      ${"06(0)86432753"}                                           | ${{ phones: [], mobiles: [], websites: [] }}
+      ${"06-65-78-45-89"}                                          | ${{ phones: [], mobiles: ["06-65-78-45-89"], websites: [] }}
       ${"Rien du tout !"}                                          | ${{ phones: [], mobiles: [], websites: [] }}
+      ${"2004280040001206"}                                        | ${{ phones: [], mobiles: [], websites: [] }}
+      ${"04280040001206"}                                          | ${{ phones: [], mobiles: [], websites: [] }}
+      ${""}                                                        | ${{ phones: [], mobiles: [], websites: [] }}
     `(
       "should return expected when run with $emailBody",
       async ({ emailBody, expected }) => {
