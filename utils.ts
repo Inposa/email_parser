@@ -1,7 +1,7 @@
 /**
  * Test if a provided phone number is a mobile phone number
  * @param phoneNumber phone numer to test
- * @returns return true if the provided phone number begins with mobile prefix
+ * @returns return true if the provided phone number begins with french mobile prefix
  */
 export const isMobilePhone = (phoneNumber = "") => {
   return (
@@ -21,11 +21,18 @@ export const isMobilePhone = (phoneNumber = "") => {
 //+33(0)654455445 --> 15
 export const isPhoneNumber = (phoneNumber = "") => {
   const phone = phoneNumber.replace(/\s|\.|-|\/+/g, "");
-  console.log("test:", phone);
   return (
     (phone.length === 10 || phone.length === 12 || phone.length === 15) &&
     (phone.startsWith("0") || phone.startsWith("+"))
   );
+};
+
+/**
+ * Concat all arrays that are not null
+ * @param arrays list of arrays
+ */
+const concatArrays = (...arrays) => {
+  [].concat(...arrays.filter(Array.isArray));
 };
 
 /**
@@ -38,20 +45,19 @@ export const isPhoneNumber = (phoneNumber = "") => {
  * }
  */
 export const emailStringParser = (testString = "") => {
-  // /((0|\+?([1-9]|[0-9][0-9]|[0-9][0-9][0-9]))[- .]?(\(0\)|)[1-9]([- .]?[0-9]{2}){4})/g
   const str = testString.replace(/\s+/g, "");
   console.log("Test str avec replace :\n", str);
-  
+
   // Use regex to find what we want
   // (?![0-9]{11}) --> exclude string if contain more than 10 digits like 2004280040001206
-  let phoneNumbers = []
 
-  phoneNumbers = phoneNumbers.concat(str.match(
+  const phoneNumbers1 = str.match(
     /(?![0-9]{11})((\+(33))|0)(\(0\))?[1-9]([-. /]?([0-9]{2})){4}/g
-  ));
-  phoneNumbers = phoneNumbers.concat(str.match(
+  );
+  const phoneNumbers2 = str.match(
     /(?:(?:\+?([1-9]|[0-9][0-9]|[0-9][0-9][0-9])\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([0-9][1-9]|[0-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?/g
-  ))
+  );
+  const phoneNumbers = concatArrays(phoneNumbers1, phoneNumbers2);
 
   console.log("Extracted :\n", phoneNumbers);
   let mobilePhone = [];
