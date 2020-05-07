@@ -22,6 +22,8 @@ app.post("/parse", function (req, res) {
 
   const token = req.body.token;
 
+  const email = req.body.email;
+
   // Stop request if invalid token is provided
   if (
     process.env.ENV !== "local" &&

@@ -32,6 +32,8 @@ export const isPhoneNumber = (phoneNumber = "") => {
  * @param arrays list of arrays
  */
 const concatArrays = (...arrays):Array<string> => {
+  const phonesVerif = new Set(arrays[0])
+
   return [].concat(...arrays.filter(Array.isArray));
 };
 
@@ -46,7 +48,7 @@ const concatArrays = (...arrays):Array<string> => {
  */
 export const emailStringParser = (testString = "") => {
   const str = testString.replace(/\s+/g, "");
-  console.log("Test str avec replace :\n", str);
+  //console.log("Test str avec replace :\n", str);
 
   // Use regex to find what we want
   // (?![0-9]{11}) --> exclude string if contain more than 10 digits like 2004280040001206
@@ -57,20 +59,22 @@ export const emailStringParser = (testString = "") => {
   const phoneNumbers2 = str.match(
     /(?:(?:\+?([1-9]|[0-9][0-9]|[0-9][0-9][0-9])\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([0-9][1-9]|[0-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?/g
   );
-  const phoneNumbers:Array<string> = concatArrays(phoneNumbers1, phoneNumbers2);
 
-  console.log("Extracted :\n", phoneNumbers);
+  const phoneNumbers = new Set(concatArrays(phoneNumbers1, phoneNumbers2));
+  
+  //console.log("Extracted :\n", phoneNumbers);
   let mobilePhone = [];
   let homePhone = [];
 
   if (phoneNumbers != null) {
-    mobilePhone = phoneNumbers.filter(
+    mobilePhone = [...phoneNumbers].filter(
       (element) => isPhoneNumber(element) && isMobilePhone(element)
     );
-    homePhone = phoneNumbers.filter(
+    homePhone = [...phoneNumbers].filter(
       (element) => isPhoneNumber(element) && !isMobilePhone(element)
     );
   }
+
 
   // Websites not used for the moment
   const websites = [];
@@ -81,7 +85,7 @@ export const emailStringParser = (testString = "") => {
     websites = [];
   }*/
 
-  console.log("Resultat \n", homePhone, mobilePhone, websites);
+  //console.log("Resultat \n", homePhone, mobilePhone, websites);
   return {
     phones: homePhone,
     mobiles: mobilePhone,
