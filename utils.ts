@@ -21,18 +21,15 @@ export const isMobilePhone = (phoneNumber = "") => {
 //+33(0)654455445 --> 15
 export const isPhoneNumber = (phoneNumber = "") => {
   const phone = phoneNumber.replace(/\s|\.|-|\/+/g, "");
-  return (
-    (phone.length === 10 || phone.length === 12 || phone.length === 15) &&
-    (phone.startsWith("0") || phone.startsWith("+"))
-  );
+  return phone.length === 10 || phone.length === 12 || phone.length === 15;
 };
 
 /**
  * Concat all arrays that are not null
  * @param arrays list of arrays
  */
-const concatArrays = (...arrays):Array<string> => {
-  const phonesVerif = new Set(arrays[0])
+const concatArrays = (...arrays): Array<string> => {
+  const phonesVerif = new Set(arrays[0]);
 
   return [].concat(...arrays.filter(Array.isArray));
 };
@@ -46,8 +43,13 @@ const concatArrays = (...arrays):Array<string> => {
  *  website: XXX
  * }
  */
-export const emailStringParser = (testString = "") => {
-  const str = testString.replace(/\s+/g, "");
+export const emailStringParser = (testString = "", email = "") => {
+  let str = testString.replace(/\s+/g, "");
+  if (email != "") {
+    const str2 = str.split(email);
+    str = str2[0];
+  }
+
   //console.log("Test str avec replace :\n", str);
 
   // Use regex to find what we want
@@ -61,7 +63,7 @@ export const emailStringParser = (testString = "") => {
   );
 
   const phoneNumbers = new Set(concatArrays(phoneNumbers1, phoneNumbers2));
-  
+
   //console.log("Extracted :\n", phoneNumbers);
   let mobilePhone = [];
   let homePhone = [];
@@ -74,7 +76,6 @@ export const emailStringParser = (testString = "") => {
       (element) => isPhoneNumber(element) && !isMobilePhone(element)
     );
   }
-
 
   // Websites not used for the moment
   const websites = [];

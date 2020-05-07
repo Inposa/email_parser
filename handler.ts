@@ -37,7 +37,7 @@ app.post("/parse", function (req, res) {
   
   const bodyString = req.body.emailBody;
   // Use regex to find what we want
-  const info = utils.emailStringParser(bodyString);
+  const info = utils.emailStringParser(bodyString, email);
   const response = { ...info, ...names };
 
   // Return result
