@@ -49,8 +49,7 @@ describe("Test suite for utils.js :", () => {
     test.each`
       phone
       ${"2004280040001206"}
-      ${"200428004000"}
-      ${"6412547895"}
+      ${"06541245"}
     `("should return false when testing for $phone", async ({ phone }) => {
       expect(Utils.isPhoneNumber(phone)).toBeFalsy();
     });
