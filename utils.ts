@@ -29,8 +29,6 @@ export const isPhoneNumber = (phoneNumber = "") => {
  * @param arrays list of arrays
  */
 const concatArrays = (...arrays): Array<string> => {
-  const phonesVerif = new Set(arrays[0]);
-
   return [].concat(...arrays.filter(Array.isArray));
 };
 
@@ -45,16 +43,15 @@ const concatArrays = (...arrays): Array<string> => {
  */
 export const emailStringParser = (testString = "", email = "") => {
   let str = testString.replace(/\s+/g, "");
-  if (email != "") {
+  /*if (email != "") {
     const str2 = str.split(email);
     str = str2[0];
-  }
+  }*/
 
   //console.log("Test str avec replace :\n", str);
 
   // Use regex to find what we want
   // (?![0-9]{11}) --> exclude string if contain more than 10 digits like 2004280040001206
-
   const phoneNumbers1 = str.match(
     /(?![0-9]{11})((\+(33))|0)(\(0\))?[1-9]([-. /]?([0-9]{2})){4}/g
   );
