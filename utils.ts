@@ -32,6 +32,13 @@ const concatArrays = (...arrays): Array<string> => {
   return [].concat(...arrays.filter(Array.isArray));
 };
 
+export const getContactRole = (testString: string = "", name: string = "") => {
+  const regexFunction = new RegExp(`(${name})\\n[^\\n]+`,"gi")
+  const result = regexFunction.exec(testString)
+  const jobFonction = result[0].split(/\s+/).slice(name.split(' ').length).join(' ');
+  return {role : jobFonction}
+}
+
 /**
  * Extract phone number and website field from a text.
  * @param testString string to test
@@ -42,13 +49,17 @@ const concatArrays = (...arrays): Array<string> => {
  * }
  */
 export const emailStringParser = (testString = "", email = "") => {
-  let str = testString.replace(/\s+/g, "");
-  /*if (email != "") {
-    const str2 = str.split(email);
-    str = str2[0];
-  }*/
+  console.log("string pas touché :\n", testString);
+  const regexTest = new RegExp(
+    "(De :[a-z <>]+([^W][a-zA-Z0-9_]+(.[a-zA-Z0-9_]+)*@[a-zA-Z0-9_]+(.[a-zA-Z0-9_]+)*.[a-zA-Z]{2,4}))",
+    "i"
+  );
+  const str2 = testString.split(regexTest);
+  console.log("TABLEAU SPLIT :\n", str2);
+  let str = str2[0];
+  str = str.replace(/\s+/g, "");
 
-  //console.log("Test str avec replace :\n", str);
+  console.log("Test str avec replace :\n", str);
 
   // Use regex to find what we want
   // (?![0-9]{11}) --> exclude string if contain more than 10 digits like 2004280040001206

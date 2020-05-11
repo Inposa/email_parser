@@ -35,11 +35,13 @@ app.post("/parse", function (req, res) {
   const fullname = req.body.name;
   const names = utils.parseNames(fullname);
   
+  
   const bodyString = req.body.emailBody;
   // Use regex to find what we want
   const info = utils.emailStringParser(bodyString, email);
-  const response = { ...info, ...names };
-
+  const role = utils.getContactRole(bodyString, fullname)
+  
+  const response = { ...info, ...names, ...role};
   // Return result
   //res.send(response);
   res.send(response);
