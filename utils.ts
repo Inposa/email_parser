@@ -33,11 +33,20 @@ const concatArrays = (...arrays): Array<string> => {
 };
 
 export const getContactRole = (testString: string = "", name: string = "") => {
-  const regexFunction = new RegExp(`(${name})\\n[^\\n]+`,"gi")
-  const result = regexFunction.exec(testString)
-  const jobFonction = result[0].split(/\s+/).slice(name.split(' ').length).join(' ');
-  return {role : jobFonction}
-}
+  const regexFunction = new RegExp(`(${name})\\n[^\\n]+`, "gi");
+  const result = regexFunction.exec(testString);
+  let jobFonction = "";
+  if (result) {
+    jobFonction = result[0]
+      .split(/\s+/)
+      .slice(name.split(" ").length)
+      .join(" ");
+  }
+  /*if (isPhoneNumber){
+    jobFonction = ""
+  }*/
+  return { role: jobFonction };
+};
 
 /**
  * Extract phone number and website field from a text.
