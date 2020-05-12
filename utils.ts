@@ -32,7 +32,21 @@ const concatArrays = (...arrays): Array<string> => {
   return [].concat(...arrays.filter(Array.isArray));
 };
 
-export const getContactRole = (testString: string = "", name: string = "") => {
+const findWebsites = (testString = ""): Array<string> => {
+  const result = testString.match(
+    /\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))/g
+  );
+  return result;
+};
+
+const findEmailAdress = (testString = ""): Array<string> => {
+  const result = testString.match(
+    /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/gi
+  );
+  return result;
+};
+
+export const findContactRole = (testString: string = "", name: string = "") => {
   const regexFunction = new RegExp(`(${name})\\n[^\\n]+`, "gi");
   const result = regexFunction.exec(testString);
   let jobFonction = "";
@@ -42,11 +56,41 @@ export const getContactRole = (testString: string = "", name: string = "") => {
       .slice(name.split(" ").length)
       .join(" ");
   }
-  /*if (isPhoneNumber){
-    jobFonction = ""
-  }*/
+  if (
+    findEmailAdress(jobFonction) ||
+    findWebsites(jobFonction) ||
+    isMobilePhone(jobFonction)
+  ) {
+    jobFonction = "";
+  }
+
   return { role: jobFonction };
 };
+
+const findPhoneNumbers = (testString = "") => {
+  console.log("string pas touché :\n", testString);
+  const regexTest = new RegExp(
+    "(De :[a-z <>]+([^W][a-zA-Z0-9_]+(.[a-zA-Z0-9_]+)*@[a-zA-Z0-9_]+(.[a-zA-Z0-9_]+)*.[a-zA-Z]{2,4}))",
+    "i"
+  );
+  const emailSeparation = testString.split(regexTest);
+  console.log("TABLEAU SPLIT :\n", emailSeparation);
+  let str = emailSeparation[0];
+  str = str.replace(/\s+/g, "");
+  //const str = testString.replace(/\s+/g, "");
+
+  console.log("Test str avec replace :\n", str);
+
+  // Use regex to find what we want
+  const phoneNumbers1 = str.match(
+    /(?![0-9]{11})((\+(33))|0)(\(0\))?[1-9]([-. /]?([0-9]{2})){4}/g
+  );
+  const phoneNumbers2 = str.match(
+    /(?:(?:\+?([1-9]|[0-9][0-9]|[0-9][0-9][0-9])\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([0-9][1-9]|[0-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?/g
+  );
+
+  return new Set(concatArrays(phoneNumbers1, phoneNumbers2));
+}
 
 /**
  * Extract phone number and website field from a text.
@@ -57,30 +101,9 @@ export const getContactRole = (testString: string = "", name: string = "") => {
  *  website: XXX
  * }
  */
-export const emailStringParser = (testString = "", email = "") => {
-  console.log("string pas touché :\n", testString);
-  const regexTest = new RegExp(
-    "(De :[a-z <>]+([^W][a-zA-Z0-9_]+(.[a-zA-Z0-9_]+)*@[a-zA-Z0-9_]+(.[a-zA-Z0-9_]+)*.[a-zA-Z]{2,4}))",
-    "i"
-  );
-  const str2 = testString.split(regexTest);
-  console.log("TABLEAU SPLIT :\n", str2);
-  let str = str2[0];
-  str = str.replace(/\s+/g, "");
+export const emailStringParser = (testString = "") => {
 
-  console.log("Test str avec replace :\n", str);
-
-  // Use regex to find what we want
-  // (?![0-9]{11}) --> exclude string if contain more than 10 digits like 2004280040001206
-  const phoneNumbers1 = str.match(
-    /(?![0-9]{11})((\+(33))|0)(\(0\))?[1-9]([-. /]?([0-9]{2})){4}/g
-  );
-  const phoneNumbers2 = str.match(
-    /(?:(?:\+?([1-9]|[0-9][0-9]|[0-9][0-9][0-9])\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([0-9][1-9]|[0-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?/g
-  );
-
-  const phoneNumbers = new Set(concatArrays(phoneNumbers1, phoneNumbers2));
-
+  const phoneNumbers = findPhoneNumbers(testString);
   //console.log("Extracted :\n", phoneNumbers);
   let mobilePhone = [];
   let homePhone = [];
@@ -94,14 +117,10 @@ export const emailStringParser = (testString = "", email = "") => {
     );
   }
 
-  // Websites not used for the moment
-  const websites = [];
-  /*let websites = testString.match(
-    /\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))/g
-  );
-  if (websites == null) {
-    websites = [];
-  }*/
+  let websites = findWebsites(testString);
+  if(websites == null){
+    websites = []
+  }
 
   //console.log("Resultat \n", homePhone, mobilePhone, websites);
   return {
