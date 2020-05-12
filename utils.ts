@@ -68,18 +68,18 @@ export const findContactRole = (testString: string = "", name: string = "") => {
 };
 
 const findPhoneNumbers = (testString = "") => {
-  console.log("string pas touché :\n", testString);
+  //console.log("string pas touché :\n", testString);
   const regexTest = new RegExp(
     "(De :[a-z <>]+([^W][a-zA-Z0-9_]+(.[a-zA-Z0-9_]+)*@[a-zA-Z0-9_]+(.[a-zA-Z0-9_]+)*.[a-zA-Z]{2,4}))",
     "i"
   );
   const emailSeparation = testString.split(regexTest);
-  console.log("TABLEAU SPLIT :\n", emailSeparation);
+  //console.log("TABLEAU SPLIT :\n", emailSeparation);
   let str = emailSeparation[0];
   str = str.replace(/\s+/g, "");
   //const str = testString.replace(/\s+/g, "");
 
-  console.log("Test str avec replace :\n", str);
+  //console.log("Test str avec replace :\n", str);
 
   // Use regex to find what we want
   const phoneNumbers1 = str.match(
@@ -104,7 +104,7 @@ const findPhoneNumbers = (testString = "") => {
 export const emailStringParser = (testString = "") => {
 
   const phoneNumbers = findPhoneNumbers(testString);
-  //console.log("Extracted :\n", phoneNumbers);
+  ////console.log("Extracted :\n", phoneNumbers);
   let mobilePhone = [];
   let homePhone = [];
 
@@ -122,7 +122,7 @@ export const emailStringParser = (testString = "") => {
     websites = []
   }
 
-  //console.log("Resultat \n", homePhone, mobilePhone, websites);
+  ////console.log("Resultat \n", homePhone, mobilePhone, websites);
   return {
     phones: homePhone,
     mobiles: mobilePhone,
