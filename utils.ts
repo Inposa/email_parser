@@ -127,7 +127,7 @@ const testNames = (stringName="") => {
 const findPhoneNumbers = (testString = "") => {
   //console.log("string pas touché :\n", testString);
   const regexTest = new RegExp(
-    "(De :[a-z <>]+([^W][a-zA-Z0-9_]+(.[a-zA-Z0-9_]+)*@[a-zA-Z0-9_]+(.[a-zA-Z0-9_]+)*.[a-zA-Z]{2,4}))",
+    "((De ?:|From ?:)[a-z <>]+([^W][a-zA-Z0-9_]+(.[a-zA-Z0-9_]+)*@[a-zA-Z0-9_]+(.[a-zA-Z0-9_]+)*.[a-zA-Z]{2,4}))",
     "i"
   );
   const emailSeparation = testString.split(regexTest);
