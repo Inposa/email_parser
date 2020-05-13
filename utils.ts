@@ -32,6 +32,30 @@ const concatArrays = (...arrays): Array<string> => {
   return [].concat(...arrays.filter(Array.isArray));
 };
 
+/**
+ * Parse firstname and lastname from a firstname and lastname couple
+ * @param fullName Full name (eg : Marc John)
+ * @returns returns an object like this :
+ *  {firstname: XXX,
+ *  lastname: XXX}
+ */
+export const parseNames = (fullName: string = "") => {
+  const splittedName = fullName ? fullName.split(" ") : null;
+  const finalParsedContact = {
+    firstname: splittedName ? splittedName[0] : "",
+    lastname:
+      splittedName && splittedName.length > 1
+        ? splittedName.slice(1).join(" ")
+        : "",
+  };
+  return finalParsedContact;
+};
+
+/**
+ * Search for websites in a string
+ * @param testString the string to test
+ * @returns an array of all websites find
+ */
 const findWebsites = (testString = ""): Array<string> => {
   const result = testString.match(
     /\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))/g
@@ -39,6 +63,11 @@ const findWebsites = (testString = ""): Array<string> => {
   return result;
 };
 
+/**
+ * Search for email adress in a string
+ * @param testString the string to test
+ * @returns an array of all email adress find
+ */
 const findEmailAdress = (testString = ""): Array<string> => {
   const result = testString.match(
     /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/gi
@@ -46,9 +75,18 @@ const findEmailAdress = (testString = ""): Array<string> => {
   return result;
 };
 
+/**
+ * Search for contact role under his name in a string,
+ * analyse string line per line and returns contact role
+ * @param testString string to test
+ * @param name name of the contact
+ * @returns an object {role}
+ */
 export const findContactRole = (testString: string = "", name: string = "") => {
-  const regexFunction = new RegExp(`(${name})\\n[^\\n]+`, "gi");
-  const result = regexFunction.exec(testString);
+  const arrayNames = testNames(name);
+  const regexRole = new RegExp(`(${arrayNames.join("|")})\\n[^\\n]+`, "gi");
+  console.log(regexRole);
+  const result = regexRole.exec(testString);
   let jobFonction = "";
   if (result) {
     jobFonction = result[0]
@@ -63,10 +101,29 @@ export const findContactRole = (testString: string = "", name: string = "") => {
   ) {
     jobFonction = "";
   }
-
   return { role: jobFonction };
 };
 
+const testNames = (stringName="") => {
+  const {firstname, lastname} = parseNames(stringName);
+  let arrayNames = [];
+  
+  //Pour tester les plusieurs cas de nom dans signature
+  if(lastname != ""){
+    const lastnameInitial = lastname[0] + ".";
+    arrayNames.push(`${firstname} ${lastnameInitial}`)
+  }
+  arrayNames.push(`${firstname} ${lastname}`)
+  arrayNames.push(`${firstname}`)
+  arrayNames.push(`${firstname.replace("-", " ")} ${lastname.replace("-", " ")}`)
+  
+  return arrayNames;
+}
+
+/**
+ * Search for phoneNumbers in a string
+ * @param testString 
+ */
 const findPhoneNumbers = (testString = "") => {
   //console.log("string pas touché :\n", testString);
   const regexTest = new RegExp(
@@ -76,10 +133,10 @@ const findPhoneNumbers = (testString = "") => {
   const emailSeparation = testString.split(regexTest);
   //console.log("TABLEAU SPLIT :\n", emailSeparation);
   let str = emailSeparation[0];
-  str = str.replace(/\s+/g, "");
+  str = str.replace(/[ \f\r\t\v\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]+/g, "");
   //const str = testString.replace(/\s+/g, "");
 
-  //console.log("Test str avec replace :\n", str);
+  console.log("Test str avec replace :\n", str);
 
   // Use regex to find what we want
   const phoneNumbers1 = str.match(
@@ -104,7 +161,7 @@ const findPhoneNumbers = (testString = "") => {
 export const emailStringParser = (testString = "") => {
 
   const phoneNumbers = findPhoneNumbers(testString);
-  ////console.log("Extracted :\n", phoneNumbers);
+  //console.log("Extracted :\n", phoneNumbers);
   let mobilePhone = [];
   let homePhone = [];
 
@@ -122,7 +179,7 @@ export const emailStringParser = (testString = "") => {
     websites = []
   }
 
-  ////console.log("Resultat \n", homePhone, mobilePhone, websites);
+  //console.log("Resultat \n", homePhone, mobilePhone, websites);
   return {
     phones: homePhone,
     mobiles: mobilePhone,
@@ -146,24 +203,4 @@ export const verifToken = (
   return (
     stringToken === process.env.ANABATOKEN || tokenArray.includes(stringToken)
   );
-};
-
-/**
- * Parse firstname and lastname from a firstname and lastname couple
- * @param fullName Full name (eg : Marc John)
- * @returns returns an object like this : {
- *  firstname: XXX,
- *  lastname: XXX,
- * }
- */
-export const parseNames = (fullName: string = "") => {
-  const splittedName = fullName ? fullName.split(" ") : null;
-  const finalParsedContact = {
-    firstname: splittedName ? splittedName[0] : "",
-    lastname:
-      splittedName && splittedName.length > 1
-        ? splittedName.slice(1).join(" ")
-        : "",
-  };
-  return finalParsedContact;
 };
