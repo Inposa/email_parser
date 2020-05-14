@@ -59,7 +59,7 @@ describe("Test suite for utils.js :", () => {
     test.each`
       emailBody                                                     | expected
       ${"site et téléphone 0668432753, 0467605412 www.example.com"} | ${{ phones: ["0467605412"], mobiles: ["0668432753"], websites: ["www.example.com"] }}
-      ${"04.67.13.00.07"}                                           | ${{ phones: ["04.67.13.00.07"], mobiles: [], websites: [] }}
+      ${"04.67.13.00.07"}                                           | ${{ phones: ["0467130007"], mobiles: [], websites: [] }}
       ${"téléphone fixe seul 0467605412"}                           | ${{ phones: ["0467605412"], mobiles: [], websites: [] }}
       ${"+33 (0)406060606"}                                         | ${{ phones: ["+33(0)406060606"], mobiles: [], websites: [] }}
       ${"+33215644865"}                                             | ${{ phones: ["+33215644865"], mobiles: [], websites: [] }}
