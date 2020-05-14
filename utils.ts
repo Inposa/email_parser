@@ -33,6 +33,26 @@ const concatArrays = (...arrays): Array<string> => {
 };
 
 /**
+ * Take a "firstname lastname" string and return signature name possibilities
+ * @param stringName firstname and lastname in a string
+ */
+const namesVariations = (stringName = "") => {
+  const { firstname, lastname } = parseNames(stringName);
+  let arrayNames = [];
+
+  //Pour tester les plusieurs cas de nom dans signature
+  if (lastname != "") {
+    const lastnameInitial = lastname[0] + "\\.";
+    arrayNames.push(`${firstname} ${lastnameInitial}`);
+  }
+  arrayNames.push(`${firstname} ${lastname}`);
+  arrayNames.push(
+    `${firstname.replace("-", " ")} ${lastname.replace("-", " ")}`
+  );
+  return arrayNames;
+};
+
+/**
  * Parse firstname and lastname from a firstname and lastname couple
  * @param fullName Full name (eg : Marc John)
  * @returns returns an object like this :
@@ -83,16 +103,22 @@ const findEmailAdress = (testString = ""): Array<string> => {
  * @returns an object {role}
  */
 export const findContactRole = (testString: string = "", name: string = "") => {
-  const arrayNames = testNames(name);
-  const regexRole = new RegExp(`(${arrayNames.join("|")})\\n[^\\n]+`, "gi");
-  console.log(regexRole);
+  const arrayNames = namesVariations(name);
+
+  //console.log(arrayNames);
+  //console.log("testString", testString);
+  const regexRole = new RegExp(
+    `(?:${arrayNames.join("|")})[a-z. ,]*(?:[\r\n]|[\|])+([^\r\n]+)`,
+    "gi"
+  );
+
+  //console.log(regexRole);
   const result = regexRole.exec(testString);
+
+  //TODO Need to be refactored
   let jobFonction = "";
   if (result) {
-    jobFonction = result[0]
-      .split(/\s+/)
-      .slice(name.split(" ").length)
-      .join(" ");
+    jobFonction = result[1];
   }
   if (
     findEmailAdress(jobFonction) ||
@@ -104,25 +130,9 @@ export const findContactRole = (testString: string = "", name: string = "") => {
   return { role: jobFonction };
 };
 
-const testNames = (stringName="") => {
-  const {firstname, lastname} = parseNames(stringName);
-  let arrayNames = [];
-  
-  //Pour tester les plusieurs cas de nom dans signature
-  if(lastname != ""){
-    const lastnameInitial = lastname[0] + ".";
-    arrayNames.push(`${firstname} ${lastnameInitial}`)
-  }
-  arrayNames.push(`${firstname} ${lastname}`)
-  arrayNames.push(`${firstname}`)
-  arrayNames.push(`${firstname.replace("-", " ")} ${lastname.replace("-", " ")}`)
-  
-  return arrayNames;
-}
-
 /**
  * Search for phoneNumbers in a string
- * @param testString 
+ * @param testString
  */
 const findPhoneNumbers = (testString = "") => {
   //console.log("string pas touché :\n", testString);
@@ -133,21 +143,23 @@ const findPhoneNumbers = (testString = "") => {
   const emailSeparation = testString.split(regexTest);
   //console.log("TABLEAU SPLIT :\n", emailSeparation);
   let str = emailSeparation[0];
-  str = str.replace(/[ \f\r\t\v\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]+/g, "");
-  //const str = testString.replace(/\s+/g, "");
+  str = str.replace(
+    /[ \f\r\t\v\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff.]+/g,
+    ""
+  );
 
-  console.log("Test str avec replace :\n", str);
+  //console.log("Test str avec replace :\n", str);
 
   // Use regex to find what we want
   const phoneNumbers1 = str.match(
-    /(?![0-9]{11})((\+(33))|0)(\(0\))?[1-9]([-. /]?([0-9]{2})){4}/g
+    /(?![0-9]{11})((\+([0-9][0-9]))|0)(\(0\))?[1-9]([- /,;]?([0-9]{2})){4}/g
   );
   const phoneNumbers2 = str.match(
     /(?:(?:\+?([1-9]|[0-9][0-9]|[0-9][0-9][0-9])\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([0-9][1-9]|[0-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?/g
   );
 
   return new Set(concatArrays(phoneNumbers1, phoneNumbers2));
-}
+};
 
 /**
  * Extract phone number and website field from a text.
@@ -159,9 +171,8 @@ const findPhoneNumbers = (testString = "") => {
  * }
  */
 export const emailStringParser = (testString = "") => {
-
   const phoneNumbers = findPhoneNumbers(testString);
-  //console.log("Extracted :\n", phoneNumbers);
+  //////console.log("Extracted :\n", phoneNumbers);
   let mobilePhone = [];
   let homePhone = [];
 
@@ -175,11 +186,11 @@ export const emailStringParser = (testString = "") => {
   }
 
   let websites = findWebsites(testString);
-  if(websites == null){
-    websites = []
+  if (websites == null) {
+    websites = [];
   }
 
-  //console.log("Resultat \n", homePhone, mobilePhone, websites);
+  ////console.log("Resultat \n", homePhone, mobilePhone, websites);
   return {
     phones: homePhone,
     mobiles: mobilePhone,
