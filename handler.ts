@@ -21,7 +21,6 @@ app.post("/parse", function (req, res) {
   // Get params
 
   const token = req.body.token;
-
   const email = req.body.email;
 
   // Stop request if invalid token is provided
@@ -34,15 +33,14 @@ app.post("/parse", function (req, res) {
 
   const fullname = req.body.name;
   const names = utils.parseNames(fullname);
-  
-  
+
   const bodyString = req.body.emailBody;
-  // Use regex to find what we want
-  const info = utils.emailStringParser(bodyString, email);
-  const role = utils.findContactRole(bodyString, fullname)
   
-  const response = { ...info, ...names, ...role};
- 
+  const info = utils.emailStringParser(bodyString, email);
+  const role = utils.findContactRole(bodyString, fullname);
+
+  const response = { ...info, ...names, ...role };
+
   // Return result
   res.send(response);
 });

@@ -4,15 +4,8 @@
  * @returns return true if the provided phone number begins with french mobile prefix
  */
 export const isMobilePhone = (phoneNumber = "") => {
-  return (
-    phoneNumber.startsWith("06") ||
-    phoneNumber.startsWith("07") ||
-    phoneNumber.startsWith("+336") ||
-    phoneNumber.startsWith("+337") ||
-    phoneNumber.startsWith("+33(0)6") ||
-    phoneNumber.startsWith("+33(0)7") ||
-    phoneNumber.startsWith("+33 (0)6") ||
-    phoneNumber.startsWith("+33 (0)7")
+  return /^(0[6-7]|\+33[6-7]|\+33\(0\)[6-7]|\+33 \(0\)[6-7])/g.test(
+    phoneNumber
   );
 };
 
@@ -36,11 +29,11 @@ const concatArrays = (...arrays): Array<string> => {
  * Take a "firstname lastname" string and return signature name possibilities
  * @param stringName firstname and lastname in a string
  */
-const namesVariations = (stringName = "") => {
+const getNamesVariations = (stringName = "") => {
   const { firstname, lastname } = parseNames(stringName);
   let arrayNames = [];
 
-  //Pour tester les plusieurs cas de nom dans signature
+  //test all cases of names combinaisons, add lastname first letter
   if (lastname != "") {
     const lastnameInitial = lastname[0] + "\\.";
     arrayNames.push(`${firstname} ${lastnameInitial}`);
@@ -103,19 +96,14 @@ const findEmailAdress = (testString = ""): Array<string> => {
  * @returns an object {role}
  */
 export const findContactRole = (testString: string = "", name: string = "") => {
-  const arrayNames = namesVariations(name);
+  const arrayNames = getNamesVariations(name);
 
-  //console.log(arrayNames);
-  //console.log("testString", testString);
   const regexRole = new RegExp(
     `(?:${arrayNames.join("|")})[a-z. ,]*(?:[\r\n]|[\|])+([^\r\n]+)`,
     "gi"
   );
-
-  //console.log(regexRole);
   const result = regexRole.exec(testString);
 
-  //TODO Need to be refactored
   let jobFonction = "";
   if (result) {
     jobFonction = result[1];
@@ -135,20 +123,16 @@ export const findContactRole = (testString: string = "", name: string = "") => {
  * @param testString
  */
 const findPhoneNumbers = (testString = "") => {
-  //console.log("string pas touché :\n", testString);
   const regexTest = new RegExp(
     "((De ?:|From ?:)[a-z <>]+([^W][a-zA-Z0-9_]+(.[a-zA-Z0-9_]+)*@[a-zA-Z0-9_]+(.[a-zA-Z0-9_]+)*.[a-zA-Z]{2,4}))",
     "i"
   );
   const emailSeparation = testString.split(regexTest);
-  //console.log("TABLEAU SPLIT :\n", emailSeparation);
   let str = emailSeparation[0];
   str = str.replace(
     /[ \f\r\t\v\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff.]+/g,
     ""
   );
-
-  //console.log("Test str avec replace :\n", str);
 
   // Use regex to find what we want
   const phoneNumbers1 = str.match(
@@ -172,7 +156,7 @@ const findPhoneNumbers = (testString = "") => {
  */
 export const emailStringParser = (testString = "") => {
   const phoneNumbers = findPhoneNumbers(testString);
-  //////console.log("Extracted :\n", phoneNumbers);
+
   let mobilePhone = [];
   let homePhone = [];
 
@@ -190,7 +174,6 @@ export const emailStringParser = (testString = "") => {
     websites = [];
   }
 
-  ////console.log("Resultat \n", homePhone, mobilePhone, websites);
   return {
     phones: homePhone,
     mobiles: mobilePhone,
