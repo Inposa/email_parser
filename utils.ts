@@ -4,9 +4,11 @@
  * @returns return true if the provided phone number begins with french mobile prefix
  */
 export const isMobilePhone = (phoneNumber = "") => {
-  return /^(0[6-7]|\+33[6-7]|\+33\(0\)[6-7]|\+33 \(0\)[6-7])/g.test(
+  //console.log("test ",phoneNumber)
+  const response = /^(0[6-7]|\+33[6-7]|\+33\(0\)[6-7]|\+33 \(0\)[6-7])/g.test(
     phoneNumber
   );
+  return response;
 };
 
 //0668452365      --> 10
@@ -123,12 +125,10 @@ export const findContactRole = (testString: string = "", name: string = "") => {
  * @param testString
  */
 const findPhoneNumbers = (testString = "") => {
-  const regexTest = new RegExp(
-    "((De ?:|From ?:)[a-z <>]+([^W][a-zA-Z0-9_]+(.[a-zA-Z0-9_]+)*@[a-zA-Z0-9_]+(.[a-zA-Z0-9_]+)*.[a-zA-Z]{2,4}))",
-    "i"
-  );
-  const emailSeparation = testString.split(regexTest);
+  //console.log(testString)
+  const emailSeparation = testString.split(/((De ?:|From ?:).+([^W][a-zA-Z0-9_]+(.[a-zA-Z0-9_]+)*@[a-zA-Z0-9_]+(.[a-zA-Z0-9_]+)*.[a-zA-Z]{2,4}))/i);
   let str = emailSeparation[0];
+  //console.log("emailSeparation",str)
   str = str.replace(
     /[ \f\r\t\v\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff.]+/g,
     ""
@@ -139,9 +139,9 @@ const findPhoneNumbers = (testString = "") => {
     /(?![0-9]{11})((\+([0-9][0-9]))|0)(\(0\))?[1-9]([- /,;]?([0-9]{2})){4}/g
   );
   const phoneNumbers2 = str.match(
-    /(?:(?:\+?([1-9]|[0-9][0-9]|[0-9][0-9][0-9])\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([0-9][1-9]|[0-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?/g
+    /(?![0-9]{7})((?:(?:\+?([1-9]|[0-9][0-9]|[0-9][0-9][0-9])\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([0-9][1-9]|[0-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?)/g
   );
-
+  //console.log(phoneNumbers1);
   return new Set(concatArrays(phoneNumbers1, phoneNumbers2));
 };
 
