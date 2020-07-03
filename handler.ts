@@ -7,7 +7,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const utils = require("./utils");
-const {verifToken} = require("./tokenVerification")
+const { verifToken } = require("./tokenVerification");
 const { anabaToken } = require("./config.json");
 
 /**
@@ -18,13 +18,10 @@ const { anabaToken } = require("./config.json");
  *  website: XXX
  * }
  */
-app.post("/parse", function (req, res) {
-  // Get params
-
+app.post("/parse", (req: any, res: any) => {
+  // Verification of auth token
   const token = req.body.token;
-  const email = req.body.email;
-
-  // Stop request if invalid token is provided
+  // Stop request if an invalid token is provided
   if (
     process.env.ENV !== "local" &&
     !verifToken(token, JSON.stringify(anabaToken))
@@ -32,11 +29,13 @@ app.post("/parse", function (req, res) {
     res.status(403).send("Forbidden: invalid token");
   }
 
+  // Get params
+  const email = req.body.email;
   const fullname = req.body.name;
   const names = utils.parseNames(fullname);
 
   const bodyString = req.body.emailBody;
-  
+
   const info = utils.emailStringParser(bodyString, email);
   const role = utils.findContactRole(bodyString, fullname);
 
