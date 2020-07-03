@@ -7,6 +7,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const utils = require("./utils");
+const {verifToken} = require("./tokenVerification")
 const { anabaToken } = require("./config.json");
 
 /**
@@ -26,7 +27,7 @@ app.post("/parse", function (req, res) {
   // Stop request if invalid token is provided
   if (
     process.env.ENV !== "local" &&
-    !utils.verifToken(token, JSON.stringify(anabaToken))
+    !verifToken(token, JSON.stringify(anabaToken))
   ) {
     res.status(403).send("Forbidden: invalid token");
   }
